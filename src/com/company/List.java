@@ -174,6 +174,7 @@ public class List implements ListInterface, Iterable<ListNode> {
      */
     @Override
     public boolean remove(ListNode node) {
+
         return remove(node.getObject());
     }
     /*
@@ -181,29 +182,29 @@ public class List implements ListInterface, Iterable<ListNode> {
      */
     @Override
     public boolean remove(Object object) {
-        ListNode node = this.search(object);
-        ListNode cabeza = new ListNode();
-        ListNode puntero = new ListNode();
-        cabeza = head;
-        puntero = head.next;
-        if(node == null){
-            return false;
-        }else if (head == tail){
-            this.clear();
-            out.println("the list only had one element");
-            return true;
-        }else{
-            while (node != puntero){
-                cabeza = puntero;
-                puntero = puntero.next;
+        if(!isEmpty()){
+            if(head==tail && object==head.getObject()) {
+                head = tail = null;
+            }else if(object==head.getObject()){
+                head = head.next;
+            }else{
+                ListNode prev;
+                ListNode temporal;
+                prev = head;
+                temporal = head.next;
+                while(temporal!=null && temporal.getObject()!=object){
+                    prev=prev.next;
+                    temporal = temporal.next;
+                }
+                if(temporal!=null){
+                    prev.next = temporal.next;
+                    if(temporal == tail){
+                        tail=prev;
+                    }
+                }
             }
-            if(node == puntero){
-                cabeza.next = puntero.next;
-                this.size--;
-                return true;
-            }else
-                return false;
         }
+        return false;
     }
 
     @Override
@@ -215,15 +216,18 @@ public class List implements ListInterface, Iterable<ListNode> {
             return false;
     }
     public Object[] toArray() {
-        int suma = 0;
-        ListNode node = new ListNode();
-        Object[] i = new Object[this.size];
-        while (node != null){
-            i[suma] = node.getObject();
-            node = node.next;
-            suma++;
+        if(!isEmpty()){
+            Object[] object = new Object[size];
+
+            int sum = 0;
+
+            for(ListNode n = head; n != null; n=n.next){
+                object[sum++] = n.getObject();
+            }
+            return object;
+        } else{
+            return new Object[0];
         }
-        return i;
     }
 
     @Override
